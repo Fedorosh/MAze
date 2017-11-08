@@ -5,7 +5,12 @@
 #include <conio.h>
 
 using namespace std;
-
+int lucas(int n)
+{
+	if (n == 1) return 2;
+	if (n == 2) return 1;
+	else return lucas(n - 2) + lucas(n - 1);
+}
 int x1, x2, z1, z2;
 void mapka(int** &lol,int &ile)
 {
@@ -63,18 +68,22 @@ void coord(int** &lol, int &ile)
 		}
 	}
 }
-bool robot(int** &lol,int x, int y)
+bool robot(int** &lol,int a,int x, int y)
 {
-	if (lol[x][y] != 0 && lol[x][y] != 1) return false;
-	if (lol[x][y] == 1) return false;
+	if ((x < 0 || x > a - 1) && (y < 0 || y > a - 1)) return false;
+	if (lol[x][y] == 1||lol[x][y] == 2) return false;
 	/*else return true;*/
 	if (x == x1 && y == z1) return true;
+	lol[x][y] = 2;
 	/*if (robot(lol, x2 - 1 , z2 - 1) == true) return true;*/
-	else if (robot(lol, x - 1, y)) { return true; }
-	else if (robot(lol, x + 1,y)) { return true; }
-	else if (robot(lol, x, y + 1)) { return true; }
-	else if (robot(lol, x, y - 1)) { return true; }
-	else return false;
+	if (robot(lol, a, x + 1, y) == true) { lol[x][y] = true; return true; }
+	else { return false; }
+	if (robot(lol,a, x - 1, y) == true) { lol[x][y] = true; return true; }
+	else { return false; }
+	if (robot(lol,a, x, y + 1) == true) { lol[x][y] = true; return true; }
+	else { return false; }
+	if (robot(lol,a, x, y - 1) == true) { lol[x][y] = true; return true; }
+	else { return false; }
 	
 }
 	
@@ -82,8 +91,13 @@ int main()
 {
 	//declarations
 	fstream file;
-	int x,y;
+	int x,y,n;
 	file.open("file.txt", ios::in);
+	//lucas
+	/*cin >> n;
+	cout << lucas(n) << endl;
+	system("pause");
+	system("cls");*/
 	//which map has to be loaded
 	menu(y);
 	for (int i = 1; i <= y; i++)
@@ -110,7 +124,7 @@ int main()
 	//creating a map
 	coord(lol,x);
 	mapka(lol,x);
-	if (robot(lol, x2, z2) == true)
+	if (robot(lol,x, x2, z2) == true)
 	{
 		cout << "wygrana";
 	}
